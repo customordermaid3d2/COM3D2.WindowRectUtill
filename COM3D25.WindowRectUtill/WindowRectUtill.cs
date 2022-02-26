@@ -11,7 +11,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace COM3D2.WindowRectUtill
+namespace LillyUtill.MyWindowRect
 {
     class MyAttribute
     {

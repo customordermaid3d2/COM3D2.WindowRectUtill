@@ -7,7 +7,7 @@
     <ProjectGuid>{50CA7D41-19C9-4D9B-BB75-9CC5889233F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>COM3D2.WindowRectUtill</RootNamespace>
+    <RootNamespace>LillyUtill.MyWindowRect</RootNamespace>
     <AssemblyName>COM3D25.WindowRectUtill</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
