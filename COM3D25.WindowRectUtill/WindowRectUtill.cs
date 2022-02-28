@@ -13,15 +13,8 @@ using UnityEngine.SceneManagement;
 
 namespace LillyUtill.MyWindowRect
 {
-    class MyAttribute
-    {
-        public const string PLAGIN_NAME = "WindowRectUtill";
-        public const string PLAGIN_VERSION = "22.2.26";
-        public const string PLAGIN_FULL_NAME = "COM3D25.WindowRectUtill.Plugin";
-    }
 
-    [BepInPlugin(MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, MyAttribute.PLAGIN_VERSION)]
-    public class WindowRectUtill : BaseUnityPlugin
+    public class WindowRectUtill
     {
         private float windowSpace;
         private Rect windowRect;
@@ -29,10 +22,8 @@ namespace LillyUtill.MyWindowRect
         private Size windowRectClose;
         //private Position position;
         //private string jsonPath;
-
-        private ManualLogSource log;
-
-        private ConfigFile config;
+              
+        //private ConfigFile config;
 
         private ConfigEntry<bool> isOpen;
         private ConfigEntry<bool> isGUIOn;
@@ -45,10 +36,15 @@ namespace LillyUtill.MyWindowRect
         private static ConfigEntry<int> vGUISortDW;
         private static ConfigEntry<int> vGUISortDH;
 
-        private static Harmony harmony;
-        private static event Action actionSave;
 
-        private static readonly List<WindowRectUtill> myWindowRects = new List<WindowRectUtill>();
+        internal static event Action actionSave;
+
+        internal static readonly List<WindowRectUtill> myWindowRects = new List<WindowRectUtill>();
+
+        internal static void ActionSave()
+        {
+            actionSave();
+        }
 
         public bool IsGUIOn
         {
@@ -89,8 +85,8 @@ namespace LillyUtill.MyWindowRect
 
         private static event Action<int, int> actionScreen;
 
-        private static int widthbak;
-        private static int heightbak;
+        internal static int widthbak;
+        internal static int heightbak;
 
         struct Position
         {
@@ -162,9 +158,7 @@ namespace LillyUtill.MyWindowRect
         public int winNum;
         public static int winCnt;
         
-
-        public WindowRectUtill() { }
-
+       // public WindowRectUtill() { }
         public WindowRectUtill(
             ConfigFile config
             , string fileName
@@ -175,11 +169,6 @@ namespace LillyUtill.MyWindowRect
             , float x = 32f, float y = 32f
             , float windowSpace = 32f
             ) {
-
-            if (vGUISortX == null) vGUISortX = config.Bind("GUI", "vGUISortX", 0);
-            if (vGUISortY == null) vGUISortY = config.Bind("GUI", "vGUISortY", 70);
-            if (vGUISortDW == null) vGUISortDW = config.Bind("GUI", "vGUISortDW", 0);
-            if (vGUISortDH == null) vGUISortDH = config.Bind("GUI", "vGUISortDH", 30);
 
             isOpen = config.Bind("GUI", "isOpen", true);
             isGUIOn = config.Bind("GUI", "isGUIOn", false);
@@ -209,21 +198,12 @@ namespace LillyUtill.MyWindowRect
             myWindowRects.Add(this);
         }
 
-        private void Awake()
+        internal static void init(ConfigFile config)
         {
-            log=Logger;
-            log.LogMessage("MyWindowRect Awake");
-            if (harmony == null)
-            {
-                harmony = Harmony.CreateAndPatchAll(typeof(WindowRectUtill));
-            }
-            SceneManager.sceneLoaded += this.OnSceneLoaded;
-        }
-
-        private void Start()
-        {
-            widthbak = Screen.width;
-            heightbak = Screen.height;
+            if (vGUISortX == null) vGUISortX = config.Bind("GUI", "vGUISortX", 0);
+            if (vGUISortY == null) vGUISortY = config.Bind("GUI", "vGUISortY", 70);
+            if (vGUISortDW == null) vGUISortDW = config.Bind("GUI", "vGUISortDW", 0);
+            if (vGUISortDH == null) vGUISortDH = config.Bind("GUI", "vGUISortDH", 30);
         }
 
         private void load()
@@ -236,12 +216,6 @@ namespace LillyUtill.MyWindowRect
         {
             x.Value = windowRect.x;
             y.Value = windowRect.y;            
-        }
-
-        public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name != "SceneADV")
-                actionSave();
         }
 
         /// <summary>
@@ -336,10 +310,7 @@ namespace LillyUtill.MyWindowRect
             }
         }
 
-        private void OnApplicationQuit()
-        {
-            actionSave();
-        }
+
 
     }
 }
