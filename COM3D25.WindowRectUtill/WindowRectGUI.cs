@@ -18,7 +18,7 @@ namespace LillyUtill.MyWindowRect
     {
         public const string PLAGIN_NAME = "WindowRectUtill";
         public const string PLAGIN_VERSION = "22.2.26";
-        public const string PLAGIN_FULL_NAME = "COM3D25.WindowRectUtill.Plugin";
+        public const string PLAGIN_FULL_NAME = "COM3D2.WindowRectUtill.Plugin";
     }
 
     [BepInPlugin(MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, MyAttribute.PLAGIN_VERSION)]
@@ -37,6 +37,7 @@ namespace LillyUtill.MyWindowRect
         {
             log = Logger;
             log.LogMessage("Awake");
+            log.LogMessage("https://github.com/customordermaid3d2/COM3D2.WindowRectUtill");
             WindowRectUtill.init(Config);
             if (harmony == null)
             {

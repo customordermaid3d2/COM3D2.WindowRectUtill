@@ -2,7 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
