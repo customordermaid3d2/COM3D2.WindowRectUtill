@@ -26,16 +26,15 @@ namespace LillyUtill.MyWindowRect
     {
         private static Harmony harmony;
         private static WindowRectUtill myWindowRect;
-        private ManualLogSource log;
+        internal static ManualLogSource log;
 
         WindowRectGUI()
         {
-            
+            log = Logger;            
         }
 
         private void Awake()
         {
-            log = Logger;
             log.LogMessage("Awake");
             log.LogMessage("https://github.com/customordermaid3d2/COM3D2.WindowRectUtill");
             WindowRectUtill.init(Config);

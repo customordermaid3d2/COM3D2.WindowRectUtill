@@ -27,6 +27,7 @@ namespace LillyUtill.MyWindowRect
 
         private ConfigEntry<bool> isOpen;
         private ConfigEntry<bool> isGUIOn;
+        private ConfigEntry<bool> isLog;
 
         private ConfigEntry<float> x;
         private ConfigEntry<float> y;
@@ -36,6 +37,7 @@ namespace LillyUtill.MyWindowRect
         private static ConfigEntry<int> vGUISortDW;
         private static ConfigEntry<int> vGUISortDH;
 
+        internal static ManualLogSource log;
 
         internal static event Action actionSave;
 
@@ -56,8 +58,7 @@ namespace LillyUtill.MyWindowRect
         {
             get => isOpen.Value;
             set
-            {
-                //isOpenAction?.Invoke(value);
+            {                
                 if (isOpen.Value != value)
                 {
                     if (value)
@@ -116,11 +117,11 @@ namespace LillyUtill.MyWindowRect
         {
             get
             {
-                // 윈도우 리사이즈시 밖으로 나가버리는거 방지
                 return windowRect;
             }
             set
             {
+                // 윈도우 리사이즈시 밖으로 나가버리는거 방지
                 windowRect = value;
                 windowRect.x = Mathf.Clamp(windowRect.x, -windowRect.width + windowSpace, Screen.width - windowSpace);
                 windowRect.y = Mathf.Clamp(windowRect.y, -windowRect.height + windowSpace, Screen.height - windowSpace);
@@ -157,21 +158,26 @@ namespace LillyUtill.MyWindowRect
 
         public int winNum;
         public static int winCnt;
-        
-       // public WindowRectUtill() { }
-        public WindowRectUtill(
-            ConfigFile config
-            , string fileName
-            , string windowFullName
-            , string windowShortName
-            , float wc = 100f, float wo = 300f
-            , float hc = 32f, float ho = 600f
-            , float x = 32f, float y = 32f
-            , float windowSpace = 32f
-            ) {
+
+        public WindowRectUtill(ConfigFile config,
+                               ManualLogSource logger,
+                               string fileName,
+                               string windowFullName,
+                               string windowShortName,
+                               float wc = 100f,
+                               float wo = 300f,
+                               float hc = 30f,
+                               float ho = 600f,
+                               float x = 30f,
+                               float y = 30f,
+                               float windowSpace = 30f)
+        {
+            log = logger;
 
             isOpen = config.Bind("GUI", "isOpen", true);
             isGUIOn = config.Bind("GUI", "isGUIOn", false);
+            isLog = config.Bind("GUI", "isLog", false);
+
             this.x = config.Bind("GUI", "x", x);
             this.y = config.Bind("GUI", "y", y);
 
@@ -198,6 +204,31 @@ namespace LillyUtill.MyWindowRect
             myWindowRects.Add(this);
         }
 
+        public WindowRectUtill(ConfigFile config,
+                               string fileName,
+                               string windowFullName,
+                               string windowShortName,
+                               float wc = 100f,
+                               float wo = 300f,
+                               float hc = 30f,
+                               float ho = 600f,
+                               float x = 30f,
+                               float y = 30f,
+                               float windowSpace = 30f) :this(config,
+                                                              WindowRectGUI.log,
+                                                              fileName,
+                                                              windowFullName,
+                                                              windowShortName,
+                                                              wc,
+                                                              wo,
+                                                              hc,
+                                                              ho,
+                                                              x,
+                                                              y,
+                                                              windowSpace)
+        {
+        }
+
         internal static void init(ConfigFile config)
         {
             if (vGUISortX == null) vGUISortX = config.Bind("GUI", "vGUISortX", 0);
@@ -214,8 +245,24 @@ namespace LillyUtill.MyWindowRect
 
         private void save()
         {
+            LogDebug($"save {windowRect}");
             x.Value = windowRect.x;
-            y.Value = windowRect.y;            
+            y.Value = windowRect.y;
+        }
+
+        private void LogDebug(string v)
+        {
+            if (isLog.Value)
+            {
+                if (log ==null)
+                {
+                    log.LogDebug(v);
+                }
+                else
+                {
+                    UnityEngine.Debug.Log(v);
+                }
+            }
         }
 
         /// <summary>
