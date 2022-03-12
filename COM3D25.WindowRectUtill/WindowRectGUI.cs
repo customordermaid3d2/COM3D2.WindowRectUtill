@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using COM3D2API;
 using HarmonyLib;
@@ -28,6 +29,9 @@ namespace LillyUtill.MyWindowRect
         private static WindowRectUtill myWindowRect;
         internal static ManualLogSource log;
 
+        private ConfigEntry<KeyboardShortcut> sortKey;
+
+
         WindowRectGUI()
         {
             log = Logger;            
@@ -37,15 +41,22 @@ namespace LillyUtill.MyWindowRect
         {
             log.LogMessage("Awake");
             log.LogMessage("https://github.com/customordermaid3d2/COM3D2.WindowRectUtill");
+
+            WindowRectUtill.widthbak = Screen.width;
+            WindowRectUtill.heightbak = Screen.height;
+
             WindowRectUtill.init(Config);
+
             if (harmony == null)
             {
                 harmony = Harmony.CreateAndPatchAll(typeof(WindowRectUtill));
             }
+
             SceneManager.sceneLoaded += this.OnSceneLoaded;
+
             myWindowRect=new WindowRectUtill( Config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME,"WR");
 
-
+            sortKey = Config.Bind("GUI", "sort key",new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt ));
         }
 
 
@@ -69,6 +80,15 @@ MyAttribute.PLAGIN_FULL_NAME
         {
             if (scene.name != "SceneADV")
                 WindowRectUtill.ActionSave();
+        }
+
+        private void Update()
+        {
+            if (sortKey.Value.IsDown())
+            {
+                log.LogMessage("Update.GUISortAll");
+                WindowRectUtill.GUISortAll();
+            }            
         }
 
         private void OnGUI()
@@ -111,15 +131,16 @@ MyAttribute.PLAGIN_FULL_NAME
 
                 #region 여기에 내용 작성
 
+                GUILayout.Label($"{sortKey.Value.IsDown()} {sortKey.Value.IsPressed()} {sortKey.Value.IsUp()}");
                 if (GUILayout.Button("GUICloseAll", GUILayout.Height(20))) { WindowRectUtill.GUICloseAll(); }
                 if (GUILayout.Button("GUIMinAll", GUILayout.Height(20))) { WindowRectUtill.GUIMinAll(); }
-                if (GUILayout.Button("GUISortAll", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
+                if (GUILayout.Button($"GUISortAll {sortKey.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
                 if (GUILayout.Button("GUISortOn", GUILayout.Height(20))) { WindowRectUtill.GUISortIsGUIOn(); }
                 if (GUILayout.Button("GUISortOpen", GUILayout.Height(20))) { WindowRectUtill.GUISortIsOpen(); }
                 
                 foreach (var item in WindowRectUtill.myWindowRects)
                 {                    
-                    GUILayout.Label(item.FullName);
+                    GUILayout.Label($"{item.winNum} {item.ShortName} {item.FullName}");
                 }
 
                 #endregion
