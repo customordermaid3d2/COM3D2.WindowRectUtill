@@ -9,5 +9,9 @@ https://youtu.be/v2TZ9zmOezc
 ![2022-03-13 00 18 23](https://user-images.githubusercontent.com/20321215/158023973-c86d2c39-9d9c-43cc-87d7-0dc45ff0477d.png)
 
 
+# need
+
+- BepInEx https://github.com/BepInEx/BepInEx  
+- COM3D2 API edit version https://github.com/customordermaid3d2/COM3D2_Plugins  
 
 
