@@ -352,6 +352,17 @@ namespace LillyUtill.MyWindowRect
             //MyLog.LogMessage("SetResolution5", windowRect.x, windowRect.y);
         }
 
+
+        public bool IsGUIOnOffChg()
+        {
+            return IsGUIOn = !IsGUIOn;
+        }
+        
+        public bool IsGUIOpenCloseChg()
+        {
+            return IsOpen = !IsOpen;
+        }
+
         public void GUILayoutTop()
         {
             GUILayout.BeginHorizontal();
