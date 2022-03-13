@@ -94,13 +94,14 @@ MyAttribute.PLAGIN_FULL_NAME
 
         private void OnGUI()
         {
-            if (!myWindowRect.IsGUIOn)
-                return;
+            myWindowRect.OnGUI();
+            //if (!myWindowRect.IsGUIOn)
+            //    return;
 
             // 별도 창을 띄우고 WindowFunction 를 실행함. 이건 스킨 설정 부분인데 따로 공부할것
-            myWindowRect.WindowRect = GUILayout.Window(myWindowRect.winNum, myWindowRect.WindowRect, WindowFunction, "", GUI.skin.box);
+            //myWindowRect.WindowRect = GUILayout.Window(myWindowRect.winNum, myWindowRect.WindowRect, WindowFunction, "", GUI.skin.box);
         }
-
+        /*
         private Vector2 scrollPosition;
 
         private void WindowFunction(int id)
@@ -137,7 +138,7 @@ MyAttribute.PLAGIN_FULL_NAME
             GUI.enabled = true;
             GUI.DragWindow(); // 창 드레그 가능하게 해줌. 마지막에만 넣어야함
         }
-
+        */
         public void WindowFunctionBody(int id)
         {
             GUILayout.Label($"{sortKey.Value.IsDown()} {sortKey.Value.IsPressed()} {sortKey.Value.IsUp()}");
