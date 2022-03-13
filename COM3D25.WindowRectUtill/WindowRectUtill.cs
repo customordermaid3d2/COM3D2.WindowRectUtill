@@ -16,6 +16,8 @@ namespace LillyUtill.MyWindowRect
 
     public class WindowRectUtill
     {
+        internal ManualLogSource log;
+
         //private float windowSpace;
         private Rect windowRect;
         private Size windowRectOpen;
@@ -37,14 +39,18 @@ namespace LillyUtill.MyWindowRect
         private ConfigEntry<float> sT;
         private ConfigEntry<float> sB;
 
+        //internal event Action<int> actionWindowFunctionBody = (x) => { };
+        public delegate void delegateWindowFunctionBody(int id);
+        delegateWindowFunctionBody windowFunctionBody;// = WindowFunctionBody;
+
         private static ConfigEntry<int> vGUISortX;
         private static ConfigEntry<int> vGUISortY;
         private static ConfigEntry<int> vGUISortDW;
         private static ConfigEntry<int> vGUISortDH;
 
-        internal static ManualLogSource log;
 
         internal static event Action actionSave;
+
 
         internal static readonly List<WindowRectUtill> myWindowRects = new List<WindowRectUtill>();
 
@@ -163,62 +169,97 @@ namespace LillyUtill.MyWindowRect
 
         public int winNum;
         public static int winCnt;
-
-        public static WindowRectUtill Create(
-            ConfigFile config,
-            ManualLogSource logger,
-            string fileName,
-            string windowFullName,
-            string windowShortName,
-            float wc = 100f,
-            float wo = 300f,
-            float hc = 30f,
-            float ho = 600f,
-            float x = 30f,
-            float y = 30f,
-            float sL = 30f,
-            float sR = 30f,
-            float sT = 30f,
-            float sB = 30f)
+        
+        public static WindowRectUtill Create(ConfigFile config, ManualLogSource logger, string fileName, string windowFullName, string windowShortName, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)
         {
-            return new WindowRectUtill( config,
-                                        WindowRectGUI.log,
-                                        fileName,
-                                        windowFullName,
-                                        windowShortName,
-                                        wc,
-                                        wo,
-                                        hc,
-                                        ho,
-                                        x,
-                                        y,
-                                        sL,
-                                        sR,
-                                        sT,
-                                        sB
-                                   );
+            return new WindowRectUtill(config, logger,  windowFullName, windowShortName, windowFunctionBody: null, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
         }
 
-        public WindowRectUtill(ConfigFile config,
-                       ManualLogSource logger,
-                       string fileName,
-                       string windowFullName,
-                       string windowShortName,
-                       float wc = 100f,
-                       float wo = 300f,
-                       float hc = 30f,
-                       float ho = 600f,
-                       float x = 30f,
-                       float y = 30f,
-                       float sL = 30f,
-                       float sR = 30f,
-                       float sT = 30f,
-                       float sB = 30f
-            )
+        public static WindowRectUtill Create(ConfigFile config, ManualLogSource logger, string windowFullName, string windowShortName, delegateWindowFunctionBody windowFunctionBody = null, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)
         {
-            log = logger;
+            return new WindowRectUtill(config, logger,  windowFullName, windowShortName, windowFunctionBody, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
+        }
+        
+        public static WindowRectUtill Create(delegateWindowFunctionBody windowFunctionBody ,ConfigFile config, ManualLogSource logger, string windowFullName, string windowShortName)
+        {
+            return new WindowRectUtill(config, logger,  windowFullName, windowShortName, windowFunctionBody);
+        }
 
-            winNum = winCnt++;
+        public WindowRectUtill(ConfigFile config, ManualLogSource logger, string fileName, string windowFullName, string windowShortName, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)                        
+        {
+            CreateMaster(config, windowFullName, windowShortName, logger, WindowFunctionBody, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
+        }
+
+        public WindowRectUtill(ConfigFile config, ManualLogSource logger, string fileName, string windowFullName, string windowShortName, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float windowSpace = 30f)                         
+        {
+            CreateMaster(config,windowFullName, windowShortName, logger, WindowFunctionBody, wc, wo, hc, ho, x, y, windowSpace, windowSpace, windowSpace, windowSpace);
+        }
+
+        ///
+        public WindowRectUtill(ConfigFile config, string fileName, string windowFullName, string windowShortName, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float windowSpace = 30f)             
+        {
+            CreateMaster(config,  windowFullName, windowShortName, WindowRectGUI.log, WindowFunctionBody, wc, wo, hc, ho, x, y, windowSpace, windowSpace, windowSpace, windowSpace);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="logger"></param>
+        /// <param name="fileName">not use</param>
+        /// <param name="windowFullName"></param>
+        /// <param name="windowShortName"></param>
+        /// <param name="windowFunctionBody"></param>
+        /// <param name="wc"></param>
+        /// <param name="wo"></param>
+        /// <param name="hc"></param>
+        /// <param name="ho"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="sL"></param>
+        /// <param name="sR"></param>
+        /// <param name="sT"></param>
+        /// <param name="sB"></param>
+        public WindowRectUtill(ConfigFile config, ManualLogSource logger, string fileName, string windowFullName, string windowShortName, delegateWindowFunctionBody windowFunctionBody = null, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)               
+        {
+            CreateMaster(config, windowFullName, windowShortName, logger, windowFunctionBody, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
+        }
+        
+        public WindowRectUtill(ConfigFile config, ManualLogSource logger,  string windowFullName, string windowShortName, delegateWindowFunctionBody windowFunctionBody = null, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)
+        {
+            CreateMaster(config, windowFullName, windowShortName, logger, windowFunctionBody, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
+        }     
+
+        public WindowRectUtill(delegateWindowFunctionBody windowFunctionBody , ConfigFile config, ManualLogSource logger,  string windowFullName, string windowShortName, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)
+        {
+            CreateMaster(config, windowFullName, windowShortName, logger, windowFunctionBody, wc, wo, hc, ho, x, y, sL, sR, sT, sB);
+        }
+
+        public WindowRectUtill(delegateWindowFunctionBody windowFunctionBody , ConfigFile config, ManualLogSource logger,  string windowFullName, string windowShortName)
+        {
+            CreateMaster(config, windowFullName, windowShortName, logger, windowFunctionBody);
+        }
+
+        private void CreateMaster(ConfigFile config, string windowFullName, string windowShortName, ManualLogSource logger=null, delegateWindowFunctionBody windowFunctionBody = null, float wc = 100f, float wo = 300f, float hc = 30f, float ho = 600f, float x = 30f, float y = 30f, float sL = 30f, float sR = 30f, float sT = 30f, float sB = 30f)
+        {           
+            if (logger != null)
+            {
+                log = logger;
+            }
+            else
+            {
+                log = WindowRectGUI.log;
+            }            
+            if (windowFunctionBody != null)
+            {
+                this.windowFunctionBody = windowFunctionBody;
+            }
+            else
+            {
+                this.windowFunctionBody = WindowFunctionBody;
+            }
+
+            winNum = 7777 + winCnt++;
             myWindowRects.Add(this);
 
             isOpen = config.Bind("GUI", "isOpen", true);
@@ -251,63 +292,9 @@ namespace LillyUtill.MyWindowRect
             actionScreen += ScreenChg;
 
             load();
-
         }
 
-        public WindowRectUtill(ConfigFile config,
-                               ManualLogSource logger,
-                               string fileName,
-                               string windowFullName,
-                               string windowShortName,
-                               float wc = 100f,
-                               float wo = 300f,
-                               float hc = 30f,
-                               float ho = 600f,
-                               float x = 30f,
-                               float y = 30f,
-                               float windowSpace = 30f) : this(config,
-                                                              WindowRectGUI.log,
-                                                              fileName,
-                                                              windowFullName,
-                                                              windowShortName,
-                                                              wc,
-                                                              wo,
-                                                              hc,
-                                                              ho,
-                                                              x,
-                                                              y,
-                                                              windowSpace,
-                                                              windowSpace,
-                                                              windowSpace,
-                                                              windowSpace
-                                   )
-        {
-        }
 
-        public WindowRectUtill(ConfigFile config,
-                               string fileName,
-                               string windowFullName,
-                               string windowShortName,
-                               float wc = 100f,
-                               float wo = 300f,
-                               float hc = 30f,
-                               float ho = 600f,
-                               float x = 30f,
-                               float y = 30f,
-                               float windowSpace = 30f) : this(config,
-                                                              WindowRectGUI.log,
-                                                              fileName,
-                                                              windowFullName,
-                                                              windowShortName,
-                                                              wc,
-                                                              wo,
-                                                              hc,
-                                                              ho,
-                                                              x,
-                                                              y,
-                                                              windowSpace)
-        {
-        }
 
         internal static void init(ConfigFile config)
         {
@@ -363,6 +350,60 @@ namespace LillyUtill.MyWindowRect
             //MyLog.LogMessage("SetResolution3", widthbak, heightbak, Screen.fullScreen);
             //MyLog.LogMessage("SetResolution4", Screen.width, Screen.height, Screen.fullScreen);
             //MyLog.LogMessage("SetResolution5", windowRect.x, windowRect.y);
+        }
+
+        public void GUILayoutTop()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(windowName, GUILayout.Height(20));
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20))) { IsOpen = !IsOpen; }
+            if (GUILayout.Button("x", GUILayout.Width(20), GUILayout.Height(20))) { IsGUIOn = false; }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// WindowRect = GUILayout.Window(winNum, WindowRect, WindowFunction, "", GUI.skin.box);
+        /// </summary>
+        public void OnGUI()
+        {
+            if (!IsGUIOn)
+                return;
+
+            WindowRect = GUILayout.Window(winNum, WindowRect, WindowFunction, "", GUI.skin.box);
+        }
+
+        private Vector2 scrollPosition;
+
+        /// <summary>
+        /// actionWindowFunctionBody(id);
+        /// </summary>
+        /// <param name="id"></param>
+        public void WindowFunction(int id)
+        {
+            GUI.enabled = true;
+
+            GUILayoutTop();
+
+            if (!IsOpen)
+            {
+            }
+            else
+            {
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+                //actionWindowFunctionBody(id);
+                windowFunctionBody(id);
+
+                GUILayout.EndScrollView();
+            }
+            GUI.enabled = true;
+            GUI.DragWindow(); // 창 드레그 가능하게 해줌. 마지막에만 넣어야함
+        }
+
+        public virtual void WindowFunctionBody(int id)
+        {
+
         }
 
         [HarmonyPatch(typeof(Screen), "SetResolution", typeof(int), typeof(int), typeof(bool))]
@@ -421,7 +462,15 @@ namespace LillyUtill.MyWindowRect
             }
         }
 
-        public static void GUIMinAll()
+        public static void GUIOpenAll()
+        {
+            foreach (var item in myWindowRects)
+            {
+                item.IsOpen = true;
+            }
+        }
+        
+        public static void GUICloseAll()
         {
             foreach (var item in myWindowRects)
             {
@@ -429,11 +478,19 @@ namespace LillyUtill.MyWindowRect
             }
         }
 
-        public static void GUICloseAll()
+        public static void GUIOffAll()
         {
             foreach (var item in myWindowRects)
             {
                 item.IsGUIOn = false;
+            }
+        }
+        
+        public static void GUIOnAll()
+        {
+            foreach (var item in myWindowRects)
+            {
+                item.IsGUIOn = true;
             }
         }
 

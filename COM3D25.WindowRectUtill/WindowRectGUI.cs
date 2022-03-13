@@ -34,7 +34,7 @@ namespace LillyUtill.MyWindowRect
 
         WindowRectGUI()
         {
-            log = Logger;            
+            log = Logger;
         }
 
         private void Awake()
@@ -54,9 +54,10 @@ namespace LillyUtill.MyWindowRect
 
             SceneManager.sceneLoaded += this.OnSceneLoaded;
 
-            myWindowRect=new WindowRectUtill( Config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME,"WR");
+            myWindowRect = new WindowRectUtill(Config, Logger, MyAttribute.PLAGIN_NAME, "WR", WindowFunctionBody);            
 
-            sortKey = Config.Bind("GUI", "sort key",new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt ));
+            sortKey = Config.Bind("GUI", "sort key", new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt));
+
         }
 
 
@@ -70,7 +71,7 @@ namespace LillyUtill.MyWindowRect
 MyAttribute.PLAGIN_FULL_NAME
 , new Action(delegate ()
 { // 기어메뉴 아이콘 클릭시 작동할 기능
-                myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn;
+    myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn;
 })
 , MyAttribute.PLAGIN_NAME // 표시될 툴팁 내용                               
 , Properties.Resources.icon);// 표시될 아이콘
@@ -88,7 +89,7 @@ MyAttribute.PLAGIN_FULL_NAME
             {
                 log.LogMessage("Update.GUISortAll");
                 WindowRectUtill.GUISortAll();
-            }            
+            }
         }
 
         private void OnGUI()
@@ -127,18 +128,7 @@ MyAttribute.PLAGIN_FULL_NAME
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, true);
 
                 #region 여기에 내용 작성
-
-                GUILayout.Label($"{sortKey.Value.IsDown()} {sortKey.Value.IsPressed()} {sortKey.Value.IsUp()}");
-                if (GUILayout.Button("GUICloseAll", GUILayout.Height(20))) { WindowRectUtill.GUICloseAll(); }
-                if (GUILayout.Button("GUIMinAll", GUILayout.Height(20))) { WindowRectUtill.GUIMinAll(); }
-                if (GUILayout.Button($"GUISortAll {sortKey.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
-                if (GUILayout.Button("GUISortOn", GUILayout.Height(20))) { WindowRectUtill.GUISortIsGUIOn(); }
-                if (GUILayout.Button("GUISortOpen", GUILayout.Height(20))) { WindowRectUtill.GUISortIsOpen(); }
-                
-                foreach (var item in WindowRectUtill.myWindowRects)
-                {                    
-                    GUILayout.Label($"{item.winNum} {item.ShortName} {item.FullName}");
-                }
+                WindowFunctionBody(id);
 
                 #endregion
 
@@ -148,6 +138,22 @@ MyAttribute.PLAGIN_FULL_NAME
             GUI.DragWindow(); // 창 드레그 가능하게 해줌. 마지막에만 넣어야함
         }
 
+        public void WindowFunctionBody(int id)
+        {
+            GUILayout.Label($"{sortKey.Value.IsDown()} {sortKey.Value.IsPressed()} {sortKey.Value.IsUp()}");
+            if (GUILayout.Button($"GUISortAll {sortKey.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
+            if (GUILayout.Button("GUISortOn", GUILayout.Height(20))) { WindowRectUtill.GUISortIsGUIOn(); }
+            if (GUILayout.Button("GUISortOpen", GUILayout.Height(20))) { WindowRectUtill.GUISortIsOpen(); }
+            if (GUILayout.Button("GUIOnAll", GUILayout.Height(20))) { WindowRectUtill.GUIOnAll(); }
+            if (GUILayout.Button("GUIOffAll", GUILayout.Height(20))) { WindowRectUtill.GUIOffAll(); }
+            if (GUILayout.Button("GUIOpenAll", GUILayout.Height(20))) { WindowRectUtill.GUIOpenAll(); }
+            if (GUILayout.Button("GUICloseAll", GUILayout.Height(20))) { WindowRectUtill.GUICloseAll(); }
+
+            foreach (var item in WindowRectUtill.myWindowRects)
+            {
+                GUILayout.Label($"{item.winNum} {item.ShortName} {item.FullName}");
+            }
+        }
 
         private void OnApplicationQuit()
         {
