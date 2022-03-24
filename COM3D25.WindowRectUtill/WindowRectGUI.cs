@@ -102,7 +102,7 @@ MyAttribute.PLAGIN_FULL_NAME
             if (kGUICloseAll.Value.IsDown())
             {
                 log.LogMessage("Update.GUICloseAll");
-                WindowRectUtill.GUIOnAll();
+                WindowRectUtill.GUICloseAll();
             }
         }
 
