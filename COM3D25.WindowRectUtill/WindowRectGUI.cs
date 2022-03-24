@@ -18,7 +18,7 @@ namespace LillyUtill.MyWindowRect
     class MyAttribute
     {
         public const string PLAGIN_NAME = "WindowRectUtill";
-        public const string PLAGIN_VERSION = "22.2.26";
+        public const string PLAGIN_VERSION = "22.3.25";
         public const string PLAGIN_FULL_NAME = "COM3D2.WindowRectUtill.Plugin";
     }
 
@@ -29,7 +29,9 @@ namespace LillyUtill.MyWindowRect
         private static WindowRectUtill myWindowRect;
         internal static ManualLogSource log;
 
-        private ConfigEntry<KeyboardShortcut> sortKey;
+        private ConfigEntry<KeyboardShortcut> kGUISortAll;
+        private ConfigEntry<KeyboardShortcut> kGUIOnAll;
+        private ConfigEntry<KeyboardShortcut> kGUICloseAll;
 
 
         WindowRectGUI()
@@ -54,9 +56,11 @@ namespace LillyUtill.MyWindowRect
 
             SceneManager.sceneLoaded += this.OnSceneLoaded;
 
-            myWindowRect = new WindowRectUtill(Config, Logger, MyAttribute.PLAGIN_NAME, "WR", WindowFunctionBody);            
+            myWindowRect = new WindowRectUtill(Config, Logger, MyAttribute.PLAGIN_NAME, "WR", WindowFunctionBody);
 
-            sortKey = Config.Bind("GUI", "sort key", new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt));
+            kGUISortAll = Config.Bind("GUI", "GUISortAll", new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt));
+            kGUIOnAll = Config.Bind("GUI", "GUIOnAll", new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt));
+            kGUICloseAll = Config.Bind("GUI", "GUICloseAll", new KeyboardShortcut(KeyCode.BackQuote, KeyCode.LeftAlt));
 
         }
 
@@ -85,10 +89,20 @@ MyAttribute.PLAGIN_FULL_NAME
 
         private void Update()
         {
-            if (sortKey.Value.IsDown())
+            if (kGUISortAll.Value.IsDown())
             {
                 log.LogMessage("Update.GUISortAll");
                 WindowRectUtill.GUISortAll();
+            }
+            if (kGUIOnAll.Value.IsDown())
+            {
+                log.LogMessage("Update.GUIOnAll");
+                WindowRectUtill.GUIOnAll();
+            }
+            if (kGUICloseAll.Value.IsDown())
+            {
+                log.LogMessage("Update.GUICloseAll");
+                WindowRectUtill.GUIOnAll();
             }
         }
 
@@ -141,14 +155,14 @@ MyAttribute.PLAGIN_FULL_NAME
         */
         public void WindowFunctionBody(int id)
         {
-            GUILayout.Label($"{sortKey.Value.IsDown()} {sortKey.Value.IsPressed()} {sortKey.Value.IsUp()}");
-            if (GUILayout.Button($"GUISortAll {sortKey.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
+            GUILayout.Label($"{kGUISortAll.Value.IsDown()} {kGUISortAll.Value.IsPressed()} {kGUISortAll.Value.IsUp()}");
+            if (GUILayout.Button($"GUISortAll {kGUISortAll.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUISortAll(); }
             if (GUILayout.Button("GUISortOn", GUILayout.Height(20))) { WindowRectUtill.GUISortIsGUIOn(); }
             if (GUILayout.Button("GUISortOpen", GUILayout.Height(20))) { WindowRectUtill.GUISortIsOpen(); }
-            if (GUILayout.Button("GUIOnAll", GUILayout.Height(20))) { WindowRectUtill.GUIOnAll(); }
+            if (GUILayout.Button($"GUIOnAll {kGUIOnAll.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUIOnAll(); }
             if (GUILayout.Button("GUIOffAll", GUILayout.Height(20))) { WindowRectUtill.GUIOffAll(); }
             if (GUILayout.Button("GUIOpenAll", GUILayout.Height(20))) { WindowRectUtill.GUIOpenAll(); }
-            if (GUILayout.Button("GUICloseAll", GUILayout.Height(20))) { WindowRectUtill.GUICloseAll(); }
+            if (GUILayout.Button($"GUICloseAll {kGUICloseAll.Value.ToString()}", GUILayout.Height(20))) { WindowRectUtill.GUICloseAll(); }
 
             foreach (var item in WindowRectUtill.myWindowRects)
             {
