@@ -91,17 +91,17 @@ MyAttribute.PLAGIN_FULL_NAME
         {
             if (kGUISortAll.Value.IsDown())
             {
-                log.LogMessage("Update.GUISortAll");
+                //log.LogMessage("Update.GUISortAll");
                 WindowRectUtill.GUISortAll();
             }
             if (kGUIOnAll.Value.IsDown())
             {
-                log.LogMessage("Update.GUIOnAll");
+                //log.LogMessage("Update.GUIOnAll");
                 WindowRectUtill.GUIOnAll();
             }
             if (kGUICloseAll.Value.IsDown())
             {
-                log.LogMessage("Update.GUICloseAll");
+                //log.LogMessage("Update.GUICloseAll");
                 WindowRectUtill.GUICloseAll();
             }
         }
