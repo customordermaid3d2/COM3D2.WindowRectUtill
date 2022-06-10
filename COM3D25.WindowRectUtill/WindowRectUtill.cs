@@ -30,6 +30,7 @@ namespace LillyUtill.MyWindowRect
         private ConfigEntry<bool> isOpen;
         private ConfigEntry<bool> isGUIOn;
         private ConfigEntry<bool> isLog;
+        private ConfigEntry<bool> isSkip;
 
         private ConfigEntry<float> x;
         private ConfigEntry<float> y;
@@ -57,6 +58,12 @@ namespace LillyUtill.MyWindowRect
         internal static void ActionSave()
         {
             actionSave();
+        }
+
+        public bool IsSkip
+        {
+            get => isSkip.Value;
+            set => isSkip.Value = value;
         }
 
         public bool IsGUIOn
@@ -265,6 +272,7 @@ namespace LillyUtill.MyWindowRect
             isOpen = config.Bind("GUI", "isOpen", true);
             isGUIOn = config.Bind("GUI", "isGUIOn", false);
             isLog = config.Bind("GUI", "isLog", false);
+            isSkip = config.Bind("GUI", "isSkip", false);
 
             this.x = config.Bind("GUI", "x", x);
             this.y = config.Bind("GUI", "y", y);
@@ -436,6 +444,7 @@ namespace LillyUtill.MyWindowRect
             int i = 0, x = vGUISortX.Value, y = vGUISortY.Value, w = vGUISortDW.Value, h = vGUISortDH.Value;
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 if (item.IsOpen)
                 {
                     item.X = Screen.width - x - item.Width - w * i;
@@ -452,6 +461,7 @@ namespace LillyUtill.MyWindowRect
             int i = 0, x = vGUISortX.Value, y = vGUISortY.Value, w = vGUISortDW.Value, h = vGUISortDH.Value;
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 if (item.IsGUIOn)
                 {
                     item.X = Screen.width - x - item.Width - w * i;
@@ -468,6 +478,7 @@ namespace LillyUtill.MyWindowRect
             int i = 0, x = vGUISortX.Value, y = vGUISortY.Value, w = vGUISortDW.Value, h = vGUISortDH.Value;
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 item.X = Screen.width - x - item.Width - w * i;
                 item.Y = y + h * i++;
             }
@@ -477,6 +488,7 @@ namespace LillyUtill.MyWindowRect
         {
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 item.IsOpen = true;
             }
         }
@@ -485,6 +497,7 @@ namespace LillyUtill.MyWindowRect
         {
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 item.IsOpen = false;
             }
         }
@@ -493,6 +506,7 @@ namespace LillyUtill.MyWindowRect
         {
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;
                 item.IsGUIOn = false;
             }
         }
@@ -501,6 +515,7 @@ namespace LillyUtill.MyWindowRect
         {
             foreach (var item in myWindowRects)
             {
+                if (item.IsSkip) continue;                              
                 item.IsGUIOn = true;
             }
         }

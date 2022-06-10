@@ -166,7 +166,10 @@ MyAttribute.PLAGIN_FULL_NAME
 
             foreach (var item in WindowRectUtill.myWindowRects)
             {
+                GUILayout.BeginHorizontal();
                 GUILayout.Label($"{item.winNum} {item.ShortName} {item.FullName}");
+                if (GUILayout.Button($"skip {item.IsSkip}", GUILayout.Height(20))) { item.IsSkip = !item.IsSkip; }
+                GUILayout.EndHorizontal();
             }
         }
 
