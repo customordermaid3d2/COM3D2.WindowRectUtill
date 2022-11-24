@@ -522,8 +522,31 @@ namespace LillyUtill.MyWindowRect
 
         private static bool hide_ui_ = false;
         internal static readonly List<WindowRectUtill> hide_ui_list = new List<WindowRectUtill>();
-
-
+        /*
+        /// <summary>
+        /// GizmoRender.UIVisible 를 사요하면 너무 늦음
+        /// </summary>
+        [HarmonyPatch(typeof(CameraMain), "ScreenShot",new Type[] {typeof(bool) })]
+        [HarmonyPrefix]
+        private static void ScreenShot(bool f_bNoUI)
+        {
+            if (hide_ui_ = f_bNoUI)
+                UIHide();
+        }
+        /// <summary>
+        /// GizmoRender.UIVisible 를 사요하면 너무 늦음
+        /// </summary>
+        [HarmonyPatch(typeof(CameraMain), "ScreenShot",new Type[] {typeof(string),typeof(int) ,typeof(bool) })]
+        [HarmonyPrefix]
+        private static void ScreenShot(string file_path, int super_size, bool no_ui_mode)
+        {
+            if(hide_ui_ = no_ui_mode)
+            UIHide();
+        }
+        */
+        /// <summary>
+        /// GizmoRender.UIVisible 를 사요하면 너무 늦음
+        /// </summary>
         [HarmonyPatch(typeof(CameraMain), "UIHide")]
         [HarmonyPrefix]
         private static void UIHide()
@@ -551,5 +574,6 @@ namespace LillyUtill.MyWindowRect
             hide_ui_list.Clear();
             hide_ui_ = false;
         }
+        
     }
 }
